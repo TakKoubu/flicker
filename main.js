@@ -1,6 +1,3 @@
-// Flickr API key
-const apiKey = '78a99c805792251c05fe432a05591e2f';
-
 // Flickr画像データのURLを返す
 const getFlickrImageURL = (photo, size) => {
   let url = `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${
@@ -27,8 +24,11 @@ const getFlickrText = (photo) => {
   return text;
 };
 
+// Flickr API key
+const apiKey = '78a99c805792251c05fe432a05591e2f';
+
 // リクエストパラメータを作る
-const parameters = $.param({
+const parameterscat = $.param({
   method: 'flickr.photos.search',
   api_key: apiKey,
   text: 'cat', // 検索テキスト
@@ -39,11 +39,27 @@ const parameters = $.param({
   format: 'json', // レスポンスをJSON形式に
   nojsoncallback: 1, // レスポンスの先頭に関数呼び出しを含めない
 });
-const url = `https://api.flickr.com/services/rest/?${parameters}`;
-console.log(url);
+
+const parametersdog = $.param({
+  method: 'flickr.photos.search',
+  api_key: apiKey,
+  text: 'dog', // 検索テキスト
+  sort: 'interestingness-desc', // 興味深さ順
+  per_page: 4, // 取得件数
+  license: '4', // Creative Commons Attributionのみ
+  extras: 'owner_name,license', // 追加で取得する情報
+  format: 'json', // レスポンスをJSON形式に
+  nojsoncallback: 1, // レスポンスの先頭に関数呼び出しを含めない
+});
+
+const caturl = `https://api.flickr.com/services/rest/?${parameterscat}`;
+const dogurl = `https://api.flickr.com/services/rest/?${parametersdog}`;
+
+console.log(caturl);
+console.log(dogurl);
 
 // 猫の画像を検索して表示
-$.getJSON(url, (data) => {
+$.getJSON(caturl, (data) => {
   console.log(data);
 
   // データが取得できなかった場合
@@ -51,7 +67,51 @@ $.getJSON(url, (data) => {
     console.error('データの取得に失敗しました。');
     return;
   }
+  // 空の<div>を作る
+  const $div = $('<div>');
 
+  // ヒット件数
+  // $div.append(`<div>${data.photos.total} photos in total</div>`);
+
+  for (let i = 0; i < data.photos.photo.length; i++) {
+    const photo = data.photos.photo[i];
+    const photoText = getFlickrText(photo);
+
+    // $divに <a href="..." ...><img src="..." ...></a> を追加する
+    $div.append(
+      $('<a>', {
+        href: getFlickrPageURL(photo),
+        class: 'd-inline-block',
+        target: '_blank', // リンクを新規タブで開く
+        'rel': "noopener noreferrer",
+        'data-toggle': 'tooltip',
+        'data-placement': 'bottom',
+        title: photoText,
+      }).append(
+        $('<img>', {
+          src: getFlickrImageURL(photo, 'q'),
+          width: 150,
+          height: 150,
+          alt: photoText,
+        }),
+      ),
+    );
+  }
+  // $divを#mainに追加する
+  $div.appendTo('#main');
+
+  // BootstrapのTooltipを適用
+  $('[data-toggle="tooltip"]').tooltip();
+});
+
+$.getJSON(dogurl, (data) => {
+  console.log(data);
+
+  // データが取得できなかった場合
+  if (data.stat !== 'ok') {
+    console.error('データの取得に失敗しました。');
+    return;
+  }
   // 空の<div>を作る
   const $div = $('<div>');
 
