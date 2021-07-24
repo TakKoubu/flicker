@@ -43,7 +43,7 @@ const parameterscat = $.param({
 const parametersdog = $.param({
   method: 'flickr.photos.search',
   api_key: apiKey,
-  text: 'cat', // 検索テキスト
+  text: 'dog', // 検索テキスト
   sort: 'interestingness-desc', // 興味深さ順
   per_page: 4, // 取得件数
   license: '4', // Creative Commons Attributionのみ
@@ -52,7 +52,7 @@ const parametersdog = $.param({
   nojsoncallback: 1, // レスポンスの先頭に関数呼び出しを含めない
 });
 
-const url = `https://api.flickr.com/services/rest/?${parameters}`;
+const url = `https://api.flickr.com/services/rest/?${parameterscat} + ${parameterscat}`;
 console.log(url);
 
 // 猫の画像を検索して表示
