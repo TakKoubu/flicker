@@ -33,7 +33,7 @@ const parameters = $.param({
   api_key: apiKey,
   text: 'cat', // 検索テキスト
   sort: 'interestingness-desc', // 興味深さ順
-  per_page: 4, // 取得件数
+  per_page: 8, // 取得件数
   license: '4', // Creative Commons Attributionのみ
   extras: 'owner_name,license', // 追加で取得する情報
   format: 'json', // レスポンスをJSON形式に
